@@ -1,2 +1,175 @@
 <!DOCTYPE html>
-<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Minecraft Command Optimizer</title><style>:root { --bg:#0b1020;--panel:#121a30;--panel2:#18223d;--text:#eef2ff;--sub:#b7c0e0;--accent:#7aa2ff;--accent2:#94f0d1;--danger:#ff9c9c;--warn:#ffd27a;--ok:#a8f4ae;--border:#2c3a66; }*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#09101f 0%,#0f1630 100%);color:var(--text);min-height:100vh}.wrap{max-width:1280px;margin:0 auto;padding:24px 16px 40px}h1{margin:0 0 8px;font-size:clamp(1.5rem,2vw,2.35rem)}h2{margin:0;font-size:1.1rem}h3{margin:0 0 10px;font-size:1rem}p{margin:0;color:var(--sub);line-height:1.6}.topline{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.badges{display:flex;flex-wrap:wrap;gap:10px}.badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#0c152a;font-size:.88rem}.grid{display:grid;gap:16px;grid-template-columns:1fr}@media(min-width:1040px){.grid{grid-template-columns:1.08fr .92fr}}.panel{background:rgba(18,26,48,.92);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);backdrop-filter:blur(8px)}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 12px}textarea,select,button{font:inherit}textarea{width:100%;min-height:360px;resize:vertical;border-radius:16px;border:1px solid var(--border);background:#0a1224;color:var(--text);padding:14px;line-height:1.55;tab-size:2;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}select,button{border-radius:12px;border:1px solid var(--border);padding:10px 14px;background:var(--panel2);color:var(--text)}button{cursor:pointer;transition:.18s transform,.18s opacity,.18s background}button:hover{transform:translateY(-1px)}button.primary{background:var(--accent);color:#08101f;border-color:transparent;font-weight:700}button.secondary{background:transparent}.small{font-size:.92rem;color:var(--sub)} .status{display:grid;gap:12px;margin-top:16px}.status.two{grid-template-columns:1fr}@media(min-width:980px){.status.two{grid-template-columns:1fr 1fr}}.card{border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:#0c152a}.list{display:grid;gap:10px;margin:0;padding-left:18px}.ok{color:var(--ok)}.warn{color:var(--warn)}.danger{color:var(--danger)}.footer{margin-top:16px;color:var(--sub);font-size:.92rem}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#0b1327;padding:2px 6px;border-radius:8px;border:1px solid #253152}.meta-box{border:1px solid var(--border);background:#0c152a;border-radius:14px;padding:12px 14px;margin-bottom:12px}.meta-title{font-weight:700;margin-bottom:6px}.editor-wrap{position:relative}.suggestions{position:absolute;z-index:20;min-width:220px;max-width:320px;border:1px solid var(--border);background:#08111f;box-shadow:0 12px 32px rgba(0,0,0,.35);border-radius:12px;overflow:hidden}.suggestion-head{padding:8px 10px;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--sub);background:#101935}.suggestions-list{display:grid;max-height:220px;overflow:auto}.suggestion-item{text-align:left;padding:10px 12px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text)}.suggestion-item:hover,.suggestion-item.active{background:#1a2950}.k{display:inline-flex;align-items:center;border:1px solid var(--border);border-bottom-width:3px;border-radius:8px;padding:0 6px;height:24px;background:#0b1327;color:var(--text);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.84rem}</style></head><body><div class="wrap"><div class="topline"><div><h1>Minecraft Command Optimizer</h1><p>Java Edition / Bedrock Edition を切り替えて、最適化・構文チェック・TAB補完を行う GitHub Pages 向けツールです。</p></div><div class="badges"><div class="badge">Java Edition</div><div class="badge">Bedrock Edition</div><div class="badge">TAB autocomplete</div></div></div><div class="grid"><section class="panel"><div class="topline"><h2>入力</h2><span class="small">複数行対応 / <span class="k">Tab</span> で候補挿入</span></div><div class="toolbar"><label for="edition">エディション</label><select id="edition"><option value="bedrock">Bedrock Edition</option><option value="java">Java Edition</option></select><label for="mode">モード</label><select id="mode"><option value="player">player mode</option><option value="command_block">command block mode</option></select><button class="primary" id="optimizeBtn">最適化 + 検査</button><button class="secondary" id="sampleBtn">サンプル入力</button><button class="secondary" id="clearBtn">クリア</button></div><div class="meta-box"><div class="meta-title">今のサンプル情報</div><div class="small" id="sampleInfo">まだサンプルは入っていません。サンプル入力を押すと、今のエディションに合ったコマンドがランダムで1つ入ります。</div></div><div class="small" style="margin-bottom:10px">Bedrock は <code>if entity@e</code> や <code>]run</code> のような短縮を許容し、Java はより厳密に空白を要求します。</div><div class="editor-wrap"><textarea id="input" spellcheck="false" placeholder="ここにコマンドを貼り付けてください"></textarea><div class="suggestions" id="suggestions" hidden><div class="suggestion-head">候補: <span class="k">Tab</span> 決定 / <span class="k">↑</span><span class="k">↓</span> 移動 / <span class="k">Esc</span> 閉じる</div><div class="suggestions-list" id="suggestionsList"></div></div></div></section><section class="panel"><div class="topline"><h2>出力</h2><span class="small" id="summary">まだ実行されていません</span></div><div class="toolbar"><button class="primary" id="copyBtn">コピー</button><button class="secondary" id="downloadBtn">.txt で保存</button></div><textarea id="output" spellcheck="false" readonly placeholder="最適化後のコマンドがここに表示されます"></textarea><div class="status two"><div class="card"><h3>エラー候補</h3><ul class="list" id="errors"></ul></div><div class="card"><h3>警告 / 補足</h3><ul class="list" id="warnings"></ul></div></div><div class="status"><div class="card"><h3>今回の版で強化した点</h3><ul class="list"><li>Java / Bedrock を分離し、版ごとに root command・execute・selector を別判定</li><li><code>/executeAAA ... runAAA ...</code> のような壊れた literal をエラー扱い</li><li>行番号つきのエラーテキストと <code>&lt;--[HERE]</code> 風マーカーを表示</li><li><span class="k">Tab</span> で root / execute / scoreboard / selector 候補を補完</li></ul></div></div><div class="footer">完全にゲーム本体そのものではありませんが、前の版よりかなり厳密に構文を追うように作り直しています。</div></section></div></div><script src="app.js"></script></body></html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minecraft Command Optimizer</title>
+  <style>
+    :root{
+      --bg:#0b1020;--panel:#121a30;--panel2:#18223d;--text:#eef2ff;--sub:#b7c0e0;--accent:#7aa2ff;
+      --danger:#ff9c9c;--warn:#ffd27a;--ok:#a8f4ae;--border:#2c3a66;--ghost:#94a3b8;--accept:#ffd95e;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#09101f 0%,#0f1630 100%);color:var(--text);min-height:100vh}
+    .wrap{max-width:1280px;margin:0 auto;padding:24px 16px 40px}
+    h1{margin:0 0 8px;font-size:clamp(1.5rem,2vw,2.35rem)}
+    h2{margin:0;font-size:1.1rem} h3{margin:0 0 10px;font-size:1rem}
+    p{margin:0;color:var(--sub);line-height:1.6}
+    .topline{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .badges{display:flex;flex-wrap:wrap;gap:10px}
+    .badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#0c152a;font-size:.88rem}
+    .grid{display:grid;gap:16px;grid-template-columns:1fr}
+    @media(min-width:1040px){.grid{grid-template-columns:1.08fr .92fr}}
+    .panel{background:rgba(18,26,48,.92);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);backdrop-filter:blur(8px)}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 12px}
+    textarea,select,button{font:inherit}
+    select,button{border-radius:12px;border:1px solid var(--border);padding:10px 14px;background:var(--panel2);color:var(--text)}
+    button{cursor:pointer;transition:.18s transform,.18s opacity,.18s background}
+    button:hover{transform:translateY(-1px)}
+    button.primary{background:var(--accent);color:#08101f;border-color:transparent;font-weight:700}
+    button.secondary{background:transparent}
+    .small{font-size:.92rem;color:var(--sub)}
+    .status{display:grid;gap:12px;margin-top:16px}
+    .status.two{grid-template-columns:1fr}
+    @media(min-width:980px){.status.two{grid-template-columns:1fr 1fr}}
+    .card{border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:#0c152a}
+    .list{display:grid;gap:10px;margin:0;padding-left:18px}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .danger{color:var(--danger)}
+    .footer{margin-top:16px;color:var(--sub);font-size:.92rem}
+    code,.k{
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#0b1327;padding:2px 6px;border-radius:8px;border:1px solid #253152
+    }
+    .k{display:inline-flex;align-items:center;height:24px;font-size:.84rem;border-bottom-width:3px}
+    .meta-box{border:1px solid var(--border);background:#0c152a;border-radius:14px;padding:12px 14px;margin-bottom:12px}
+    .meta-title{font-weight:700;margin-bottom:6px}
+    .editor-wrap{position:relative;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#081127}
+    .editor-wrap textarea,.editor-view{
+      width:100%;min-height:360px;resize:vertical;padding:14px;line-height:1.55;tab-size:2;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;word-break:break-word
+    }
+    .editor-wrap textarea{
+      position:relative;background:transparent;border:none;outline:none;color:transparent;caret-color:#eef2ff;z-index:2
+    }
+    .editor-view{
+      position:absolute;inset:0;pointer-events:none;color:var(--text);z-index:1;overflow:hidden
+    }
+    .editor-view .ghost{color:var(--ghost)}
+    .editor-view .accepted{color:var(--accept)}
+    .output{
+      width:100%;min-height:360px;resize:vertical;border-radius:16px;border:1px solid var(--border);background:#0a1224;color:var(--text);
+      padding:14px;line-height:1.55;tab-size:2;font-family:ui-monospace,SFMono-Regular,Consolas,monospace
+    }
+    .suggestions{
+      position:absolute;z-index:20;min-width:240px;max-width:360px;border:1px solid var(--border);background:#08111f;
+      box-shadow:0 12px 32px rgba(0,0,0,.35);border-radius:12px;overflow:hidden
+    }
+    .suggestion-head{padding:8px 10px;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--sub);background:#101935}
+    .suggestions-list{display:grid;max-height:220px;overflow:auto}
+    .suggestion-item{text-align:left;padding:10px 12px;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text)}
+    .suggestion-item.active,.suggestion-item:hover{background:#1a2950}
+    .suggestion-prefix{opacity:.8}
+    .suggestion-rest{color:var(--ghost)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topline">
+      <div>
+        <h1>Minecraft Command Optimizer</h1>
+        <p>Java Edition / Bedrock Edition を切り替えて、最適化・構文チェック・予測変換風の Tab 補完を行う GitHub Pages 向けツールです。</p>
+      </div>
+      <div class="badges">
+        <div class="badge">Java Edition</div>
+        <div class="badge">Bedrock Edition</div>
+        <div class="badge">Tab prediction</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="topline">
+          <h2>入力</h2>
+          <span class="small">複数行対応 / <span class="k">Tab</span> で候補を巡回 / <span class="k">Enter</span> で確定</span>
+        </div>
+
+        <div class="toolbar">
+          <label for="edition">エディション</label>
+          <select id="edition">
+            <option value="bedrock">Bedrock Edition</option>
+            <option value="java">Java Edition</option>
+          </select>
+
+          <label for="mode">モード</label>
+          <select id="mode">
+            <option value="player">player mode</option>
+            <option value="command_block">command block mode</option>
+          </select>
+
+          <button class="primary" id="optimizeBtn">最適化 + 検査</button>
+          <button class="secondary" id="sampleBtn">サンプル入力</button>
+          <button class="secondary" id="clearBtn">クリア</button>
+        </div>
+
+        <div class="meta-box">
+          <div class="meta-title">今のサンプル情報</div>
+          <div class="small" id="sampleInfo">まだサンプルは入っていません。サンプル入力を押すと、今のエディションに合ったコマンドがランダムで 1 つ入ります。</div>
+        </div>
+
+        <div class="small" style="margin-bottom:10px">
+          Bedrock は <code>if entity@e</code>・<code>]run</code>・<code>fill~~~~1~1~1</code> のような短縮を許容する方向で扱い、
+          Java は空白をより厳密に見ます。Tab 補完は Java の予測変換に寄せて、<strong>Tab で候補を巡回 → 文字入力やスペースで確定</strong> できます。
+        </div>
+
+        <div class="editor-wrap" id="editorWrap">
+          <pre class="editor-view" id="editorView" aria-hidden="true"></pre>
+          <textarea id="input" spellcheck="false" placeholder="ここにコマンドを貼り付けてください"></textarea>
+          <div class="suggestions" id="suggestions" hidden>
+            <div class="suggestion-head"><span class="k">Tab</span> で巡回 / 文字入力かスペースで確定 / <span class="k">Enter</span> 確定 / <span class="k">Esc</span> 閉じる</div>
+            <div class="suggestions-list" id="suggestionsList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="topline">
+          <h2>出力</h2>
+          <span class="small" id="summary">まだ実行されていません</span>
+        </div>
+
+        <div class="toolbar">
+          <button class="primary" id="copyBtn">コピー</button>
+          <button class="secondary" id="downloadBtn">.txt で保存</button>
+        </div>
+
+        <textarea class="output" id="output" spellcheck="false" readonly placeholder="最適化後のコマンドがここに表示されます"></textarea>
+
+        <div class="status two">
+          <div class="card">
+            <h3>エラー候補</h3>
+            <ul class="list" id="errors"></ul>
+          </div>
+          <div class="card">
+            <h3>警告 / 補足</h3>
+            <ul class="list" id="warnings"></ul>
+          </div>
+        </div>
+
+        <div class="status">
+          <div class="card">
+            <h3>今回の重点</h3>
+            <ul class="list">
+              <li>Bedrock の packed 構文を強化して、<code>positioned~~~</code> や <code>summon villager~~~</code> 系の誤検知を減らす</li>
+              <li>候補表示を prefix 一致のみに変更し、<code>summ</code> なら <code>summ</code> で始まる候補だけを出す</li>
+              <li>Tab 1 回目で灰色プレビュー、Tab を続けて押すと次候補、文字入力やスペースで確定</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer">ゲーム本体そのものの完全再実装ではありませんが、前の版より Bedrock packed 構文と Java 風予測変換の挙動をかなり寄せています。</div>
+      </section>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
